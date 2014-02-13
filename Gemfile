@@ -49,6 +49,10 @@ end
 group :development, :test do
 	gem 'pry'
 	gem 'rspec-rails'
+  gem 'guard-rspec'
+  gem 'guard-livereload'
+  gem 'dotenv-rails'
+  gem 'better_errors'
 end
 
 # Use ActiveModel has_secure_password

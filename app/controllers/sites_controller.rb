@@ -1,7 +1,7 @@
 class SitesController < ApplicationController
   def new
     @site = Site.new
-  end
+  end 
 
   def create
     url = params.require(:site)[:url]
@@ -17,14 +17,30 @@ class SitesController < ApplicationController
     @site = Site.find(params[:id])
 
     @links = @site.links
+    
     respond_to do |f|
       f.html
-      f.json { render :json => @site }
+      f.json { render :json => @site.to_json(:include => [:links]), :status => 200 } 
     end
+
   end
 
   def linkfarm
   end
+
+  def edit
+  end
+
+  def destroy
+    @site = Site.find(params[:id])
+    @site.delete
+
+    respond_to do |f|
+      f.html { redirect_to new_site_path }
+    end    
+
+  end
+
 
   rescue_from ActionController::ParameterMissing, :only => :create do |err|
     respond_to do |f|
