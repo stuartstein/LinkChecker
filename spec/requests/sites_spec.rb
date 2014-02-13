@@ -61,13 +61,39 @@ describe "Sites" do
 	end
 
 	describe "GET /sites/:id/edit" do
-		it 'is successful with HTML'
-		it 'is a 404 with JSON'
+		
+		before do
+			@site = Site.create!(:url => "no-links-here.com")
+		end
+
+		it 'is successful with HTML' do
+			get "/sites/#{@site.id}/edit"
+			response.should be_success
+		end
+
+		it 'is a 404 with JSON' do
+			get "/sites/#{@site.id}/edit.json"
+			response.code.should == "404"
+			result = JSON.parse(response.body)		
+			result["error"].should == "This site contains no data"
+		end
+
 	end
 
 	describe "GET /sites/new" do
-		it 'is successful with HTML'
-		it 'is a 404 with JSON'
+
+		it 'is successful with HTML' do
+			get "sites/new"
+			response.should be_success
+		end
+
+		it 'is a 404 with JSON' do
+			get 'sites/new.json'
+			response.code.should == "404"
+			result = JSON.parse(response.body)	
+			result["error"].should == "This site contains no data"
+		end
+
 	end
 
 	describe "GET /linkfarm/" do
@@ -76,7 +102,23 @@ describe "Sites" do
 	end
 
 	describe "DELETE /sites/:id" do
-		it 'succeeds and redirects with HTML'
-		it 'succeeds and does not redirect with JSON'
+
+		before do
+			@site = Site.create!(:url => "no-links-here.com")
+		end
+
+		it 'succeeds and redirects with HTML' do
+			delete "sites/#{@site.id}"
+			response.code.should == "302"
+			response.should redirect_to new_site_path
+		end
+
+		it 'succeeds and does not redirect with JSON' do
+			delete "sites/#{@site.id}.json"
+			response.code.should == "200"
+			response.should_not be_redirect
+		end
+
 	end
+
 end

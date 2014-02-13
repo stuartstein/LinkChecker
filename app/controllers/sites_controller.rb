@@ -1,6 +1,11 @@
 class SitesController < ApplicationController
   def new
     @site = Site.new
+
+    respond_to do |f|
+      f.html 
+      f.json {render :json  => {:error => "This site contains no data"}, :status => 404}
+    end
   end 
 
   def create
@@ -29,6 +34,13 @@ class SitesController < ApplicationController
   end
 
   def edit
+    @site = Site.new
+
+    respond_to do |f|
+      f.html 
+      f.json {render :json => {:error => "This site contains no data"}, :status => 404}
+    end
+
   end
 
   def destroy
@@ -36,7 +48,8 @@ class SitesController < ApplicationController
     @site.delete
 
     respond_to do |f|
-      f.html { redirect_to new_site_path }
+      f.html { redirect_to new_site_path, :status => 302 }
+      f.json { render :json => @site, :status => 200 }
     end    
 
   end
@@ -47,6 +60,7 @@ class SitesController < ApplicationController
       f.html do 
         redirect_to new_site_path
       end
+
       f.json {render :json  => {:error => err.message}, :status => 422}
     end
   end
