@@ -97,8 +97,28 @@ describe "Sites" do
 	end
 
 	describe "GET /linkfarm/" do
-		it 'gets the links with HTML'
-		it 'gets the links with JSON'
+
+		before do
+			@link = Link.create!(:url => "no-links-here.com", :http_response => "200" )
+		end
+
+		it 'gets the links with HTML' do
+			get "/linkfarm"
+			response.should be_success
+			response.body.should include(@link.url)
+		end
+
+		it 'gets the links with JSON' do 
+			get "/linkfarm.json"
+			response.should be_success
+			result = JSON.parse(response.body)
+			link = result.first
+			
+			link.should_not == nil
+			link["url"].should == @link.url
+			link["http_response"].should == @link.http_response
+		end
+
 	end
 
 	describe "DELETE /sites/:id" do

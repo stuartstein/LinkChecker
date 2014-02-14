@@ -31,6 +31,14 @@ class SitesController < ApplicationController
   end
 
   def linkfarm
+    
+    @links = Link.all
+
+    respond_to do |f|
+      f.html
+      f.json { render :json => @links, :status => 200 } 
+    end
+
   end
 
   def edit
